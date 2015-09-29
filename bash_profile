@@ -1,15 +1,15 @@
-export EDITOR='subl -w'
+  export EDITOR='subl -w'
 
-[ -f ${HOME}/.bashrc ] && source ${HOME}/.bashrc
 parse_git_branch() {
     git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
 }
 
-if [ -f ~/.bashrc ]; then
-   source ~/.bashrc
-fi
+[ -f ~/.bashrc ] && source ~/.bashrc
 
 PS1='[ \[\e[0;96m\]\t\]-\e[1;95m\]\h \e[0;92m\]\]\w\e[0;93m\]$(parse_git_branch)\e[00m\] ]\n$ '
+
+alias nginx='sudo env rvm_trust_rvmrcs_flag=1 /usr/local/bin/nginx'
+alias stopnginx='sudo /usr/local/bin/nginx -s stop'
 
 alias se="ps ax | grep"
 alias seu="ps aux | grep"
@@ -24,23 +24,35 @@ alias bil="be rails s"
 alias ce="CODAS_ENV=development rackup -p 4567"
 alias alp="./bin/rails s -p 3001"
 
-alias update-alpaca="p && cd alpaca && git stash && git co master && git fetch -p && git pull && bundle"
-alias update-bilcas="p && cd bilcas && git stash && git co master && git fetch -p && git pull && bundle"
-alias update-codas="p && cd codas && git stash && git co master && git fetch -p && git pull && bundle"
-alias update-fe="fe && git stash && git co master && git fetch -p && git pull && bundle"
-alias update-fca="fca && git stash && git co production && git fetch -p && git pull && bundle"
-alias update-transfers="p && cd transfers && git stash && git co master && git fetch -p && git pull && bundle"
-alias update-devtools="p && cd devtools && git stash && git co master && git fetch -p && git pull && bundle"
-alias update-blackbox="p && cd blackbox-cukes && git stash && git co master && git fetch -p && git pull && bundle"
-alias update-loan="p && cd loan_engine && git stash && git co master && git fetch -p && git pull && bundle"
-alias update-crm="p && cd crm_service_layer && git stash && git co master && git fetch -p && git pull && bundle"
-alias update-bank-pool="p && cd lovelace && git stash && git co master && git fetch -p && git pull && bundle"
+alias project-update="git stash && git co master && git fetch -p && git pull && gem install bundler && bundle"
 
-alias update-env="update-alpaca && update-bilcas && update-codas && update-fe && update-fca && update-transfers && update-devtools && update-blackbox && update-loan && update-crm && update-lovelace && update-bank-pool && fca"
+alias update-transfers="p && cd transfers && project-update"
+alias update-bilcas="p && cd bilcas && project-update"
+alias update-codas="p && cd codas && project-update"
+alias update-fca="fca && git stash && git co production && git fetch -p && git pull && bundle"
+alias update-fe="fe && project-update"
+alias update-alpaca="p && cd alpaca && project-update"
+alias update-autobid="p && cd autobid && project-update"
+alias update-auto_invest="p && cd auto_invest && project-update"
+alias update-bank-pool="p && cd bank-pool && project-update"
+alias update-bilcas_stub="p && cd bilcas_stub && project-update"
+alias update-crm="p && cd crm_service_layer && project-update"
+alias update-dispatcher="p && cd dispatcher && project-update"
+alias update-loan="p && cd loan_engine && project-update"
+alias update-lovelace="p && cd lovelace && project-update"
+alias update-uk-gateway="p && cd uk-gateway && project-update"
+
+
+alias update-devtools="p && cd devtools && project-update"
+alias update-blackbox="p && cd blackbox-cukes && project-update"
+alias update-cashbook="p && cd cashbook && project-update"
+
+alias update-env="update-transfers && update-bilcas && update-codas && update-fca && update-fe && update-alpaca && update-autobid && update-auto_invest && update-bank-pool && update-bilcas_stub && update-crm && update-dispatcher && update-loan && update-lovelace && update-uk-gateway && update-devtools && update-blackbox && update-cashbook && fca"
 
 PATH=/usr/local/share/npm/bin:$PATH
 PATH=/usr/local/bin/npm/lib:$PATH
 
+EXTRA_CLASSPATH="/Users/sjohnson/projects/riemann-0.2.10/monitoring-config/riemann/lib/riemann-extra-0.2.4-standalone.jar"
 export RBENV_ROOT=/usr/local/var/rbenv
 if which rbenv > /dev/null; then eval "$(rbenv init -)"; fi
 
@@ -53,7 +65,17 @@ export HISTFILESIZE=
 export HISTSIZE=
 export HISTTIMEFORMAT="[%F %T] "
 
+
 export DOCKER_CERT_PATH=/Users/sjohnson/.boot2docker/certs/boot2docker-vm
 export DOCKER_TLS_VERIFY=1
 export DOCKER_HOST=tcp://192.168.59.103:2376
 export PGDATABASE='postgres'
+export CLOUDAMQP_PASSWORD="blahblah"
+export PROJECTS_DIR=~/projects
+export FRONTEND_ROOT=$PROJECTS_DIR/fca-frontend
+export FCA_ROOT=$PROJECTS_DIR/funding_circle_app
+
+source /Users/sjohnson/projects/devtools/.source
+ssh-add /Users/sjohnson/.vagrant.d/insecure_private_key &>/dev/null
+
+eval $(docker-machine env dev)
